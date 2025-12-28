@@ -65,9 +65,17 @@
   .modal-content button {
     padding:12px 40px; font-size:1.2rem; background:#4caf50; color:white; border:none; border-radius:30px; cursor:pointer;
   }
+
+  /* Часы */
+  #clock {
+    position:fixed; top:20px; right:20px; font-size:1.5rem; color:#ffd700; padding:10px 18px; background:rgba(123,31,162,.7); border-radius:30px; border:1px solid #9c27b0; box-shadow:0 4px 15px rgba(123,31,162,.5); z-index:500; font-weight:bold; font-family:monospace;
+  }
 </style>
 </head>
 <body>
+
+<!-- Часы -->
+<div id="clock">00:00:00</div>
 
 <!-- Никнейм при первом запуске -->
 <div id="nickname-modal">
@@ -546,6 +554,17 @@ btnLeaderboard.onclick = () => {
 btnCloseLeaderboard.onclick = () => {
   leaderboardPanel.style.display = 'none';
 };
+
+// ЧАСЫ
+function updateClock() {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
 
 // ТАЙМЕРЫ
 setInterval(saveProgress, 8000);

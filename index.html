@@ -57,6 +57,19 @@
   table { width:100%; border-collapse:collapse; margin-top:20px; }
   th, td { padding:12px; border-bottom:1px solid #7b1fa2; text-align:center; }
   th { background:#4a148c; }
+
+  /* Рулетка кейсов - модальное окно */
+  .case-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.9); backdrop-filter:blur(12px); z-index:2000; align-items:center; justify-content:center; }
+  .case-modal.active { display:flex; }
+  .case-modal-content { background:linear-gradient(135deg,#1a0033,#2d004d,#1a0033); border:2px solid #ffd700; border-radius:40px; padding:60px 80px; text-align:center; box-shadow:0 0 80px rgba(255,215,0,.6),inset 0 0 40px rgba(255,215,0,.1); animation:scaleIn 0.5s ease-out; }
+  @keyframes scaleIn { from { transform:scale(0.8); opacity:0; } to { transform:scale(1); opacity:1; } }
+  .case-roulette { font-size:12rem; font-weight:900; color:#ffd700; text-shadow:0 0 40px #ff8c00,0 0 80px #ff6b00,0 0 120px #ff4500; letter-spacing:20px; min-height:180px; display:flex; align-items:center; justify-content:center; font-family:monospace; }
+  .roulette-rolling { animation:spin2d 0.15s linear infinite; }
+  @keyframes spin2d { 0% { transform:scale(1) rotate(0deg); } 50% { transform:scale(1.05); } 100% { transform:scale(1) rotate(360deg); } }
+  .case-modal-label { font-size:2.5rem; color:#ffeb3b; margin-bottom:30px; text-shadow:0 0 20px #ffeb3b; font-weight:bold; }
+  .case-modal-result { font-size:1.8rem; color:#76ff03; margin-top:40px; text-shadow:0 0 15px #76ff03; font-weight:bold; }
+  .case-modal-glow { position:absolute; inset:0; border-radius:40px; background:linear-gradient(45deg,transparent,rgba(255,215,0,.2),transparent); border:2px solid transparent; border-image:linear-gradient(45deg,transparent,#ffd700,transparent) 1; animation:glowPulse 2s ease-in-out infinite; pointer-events:none; }
+  @keyframes glowPulse { 0%, 100% { opacity:0.3; } 50% { opacity:1; } }
 </style>
 </head>
 <body>
@@ -69,6 +82,16 @@
       <div class="pupil"></div>
       <div class="highlight"></div>
       <div class="no-energy-text" id="noEnergyMsg">Энергия исчерпана<br>Ожидайте 5 мин</div>
+    </div>
+  </div>
+
+  <!-- Модальное окно рулетки кейсов -->
+  <div class="case-modal" id="caseModal">
+    <div class="case-modal-content">
+      <div class="case-modal-glow"></div>
+      <div class="case-modal-label">💎 Таинственный кейс 💎</div>
+      <div class="case-roulette" id="caseRoulette">500</div>
+      <div class="case-modal-result" id="caseModalResult"></div>
     </div>
   </div>
 
@@ -93,8 +116,24 @@
 
   <!-- Магазин -->
   <div id="shop">
-    <h2>Магазин скинов</h2>
-    <div class="skin-grid" id="skinGrid"></div>
+    <h2>Магазин</h2>
+    
+    <div style="margin-bottom:30px; padding-bottom:20px; border-bottom:1px solid #7b1fa2;">
+      <h3 style="margin-top:0;">Скины</h3>
+      <div class="skin-grid" id="skinGrid"></div>
+    </div>
+
+    <div style="margin-bottom:30px;">
+      <h3 style="margin-top:0;">Кейсы</h3>
+      <div style="background:rgba(80,40,120,.4); border:2px solid #7b1fa2; border-radius:12px; padding:20px; text-align:center;">
+        <div style="font-size:3rem; margin-bottom:10px;">💎</div>
+        <div style="font-size:1.2rem; font-weight:bold; margin-bottom:10px;">Таинственный кейс</div>
+        <div style="color:#b0bec5; margin-bottom:15px;">Выпадает от 100 до 10 000 очков!</div>
+        <button class="btn btn-shop" id="openCaseBtn" style="background:#ffc107; color:#000; font-weight:bold;">Открыть кейс (1500 очков)</button>
+        <div id="caseResult" style="margin-top:15px; font-size:1.1rem; font-weight:bold; min-height:20px;"></div>
+      </div>
+    </div>
+
     <button class="btn btn-shop" id="closeShop" style="margin-top:25px; background:#d81b60;">Закрыть</button>
   </div>
 
@@ -288,6 +327,17 @@ const MAX_ENERGY = 100;
 
 energy = Math.min(MAX_ENERGY, energy + Math.floor((Date.now() - lastTime) / 1000 / 300));
 
+// =============================================
+// КЕЙСЫ
+// =============================================
+const CASE_PRICE = 1500;
+const CASE_MIN_REWARD = 100;
+const CASE_MAX_REWARD = 10000;
+
+function generateCaseReward() {
+  return Math.floor(Math.random() * (CASE_MAX_REWARD - CASE_MIN_REWARD + 1)) + CASE_MIN_REWARD;
+}
+
 // DOM
 const eye = document.getElementById('eye');
 const scoreEl = document.getElementById('score');
@@ -308,6 +358,8 @@ const skinGrid = document.getElementById('skinGrid');
 const achGrid = document.getElementById('achGrid');
 const btnShop = document.getElementById('toggleShop');
 const btnCloseShop = document.getElementById('closeShop');
+const openCaseBtn = document.getElementById('openCaseBtn');
+const caseResult = document.getElementById('caseResult');
 const btnAch = document.getElementById('toggleAch');
 const btnCloseAch = document.getElementById('closeAch');
 const btnPrestige = document.getElementById('togglePrestige');
@@ -420,6 +472,67 @@ function applySkin() {
   const skin = SKINS.find(s => s.id === currentSkin) || SKINS[0];
   eye.style.background = skin.bg;
 }
+
+// =============================================
+// ОБРАБОТЧИК КЕЙСОВ
+// =============================================
+const caseModal = document.getElementById('caseModal');
+const caseRoulette = document.getElementById('caseRoulette');
+const caseModalResult = document.getElementById('caseModalResult');
+
+openCaseBtn.onclick = () => {
+  if (score < CASE_PRICE) {
+    caseResult.textContent = '❌ Недостаточно очков!';
+    caseResult.style.color = '#ff5252';
+    setTimeout(() => caseResult.textContent = '', 3000);
+    return;
+  }
+
+  if (openCaseBtn.disabled) return;
+  openCaseBtn.disabled = true;
+
+  // Вычитаем стоимость кейса
+  score -= CASE_PRICE;
+  updateUI();
+  
+  // Генерируем награду
+  const reward = generateCaseReward();
+  
+  // Показываем модальное окно рулетки
+  caseModal.classList.add('active');
+  caseRoulette.textContent = '500';
+  caseModalResult.textContent = '';
+  caseRoulette.classList.add('roulette-rolling');
+  
+  // Крутим рулетку 3 секунды (медленно)
+  let counter = 0;
+  const rouletteInterval = setInterval(() => {
+    caseRoulette.textContent = Math.floor(Math.random() * 10000) + 100;
+    counter++;
+    if (counter > 30) {
+      clearInterval(rouletteInterval);
+      
+      // Показываем финальный результат
+      caseRoulette.classList.remove('roulette-rolling');
+      caseRoulette.textContent = reward;
+      
+      score += reward;
+      updateUI();
+      saveProgress();
+      
+      // Показываем сообщение
+      setTimeout(() => {
+        caseModalResult.textContent = `🎉 Ты выиграл ${reward} очков!`;
+        
+        // Закрываем модальное окно
+        setTimeout(() => {
+          caseModal.classList.remove('active');
+          openCaseBtn.disabled = false;
+        }, 3000);
+      }, 800);
+    }
+  }, 150);
+};
 
 function updateUI() {
   scoreEl.textContent = score.toLocaleString();

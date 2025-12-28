@@ -70,6 +70,24 @@
   .case-modal-result { font-size:1.8rem; color:#76ff03; margin-top:40px; text-shadow:0 0 15px #76ff03; font-weight:bold; }
   .case-modal-glow { position:absolute; inset:0; border-radius:40px; background:linear-gradient(45deg,transparent,rgba(255,215,0,.2),transparent); border:2px solid transparent; border-image:linear-gradient(45deg,transparent,#ffd700,transparent) 1; animation:glowPulse 2s ease-in-out infinite; pointer-events:none; }
   @keyframes glowPulse { 0%, 100% { opacity:0.3; } 50% { opacity:1; } }
+
+  /* Радужный скин */
+  .rainbow-eye { animation:rainbowShift 8s ease-in-out infinite; }
+  @keyframes rainbowShift {
+    0% { background:radial-gradient(circle at 40% 40%, #fff, #ff0000 30%, #ff7700 60%, #ff0000 100%); }
+    8% { background:radial-gradient(circle at 40% 40%, #fff, #ff3300 30%, #ff8800 60%, #ff3300 100%); }
+    16% { background:radial-gradient(circle at 40% 40%, #fff, #ff7700 30%, #ffff00 60%, #ff7700 100%); }
+    24% { background:radial-gradient(circle at 40% 40%, #fff, #ffaa00 30%, #ffff00 60%, #ffaa00 100%); }
+    32% { background:radial-gradient(circle at 40% 40%, #fff, #00ff00 30%, #00ff88 60%, #00ff00 100%); }
+    40% { background:radial-gradient(circle at 40% 40%, #fff, #00ff44 30%, #00dd88 60%, #00ff44 100%); }
+    48% { background:radial-gradient(circle at 40% 40%, #fff, #0088ff 30%, #0000ff 60%, #0088ff 100%); }
+    56% { background:radial-gradient(circle at 40% 40%, #fff, #0055ff 30%, #0044ff 60%, #0055ff 100%); }
+    64% { background:radial-gradient(circle at 40% 40%, #fff, #4400ff 30%, #9900ff 60%, #4400ff 100%); }
+    72% { background:radial-gradient(circle at 40% 40%, #fff, #7700ff 30%, #9944ff 60%, #7700ff 100%); }
+    80% { background:radial-gradient(circle at 40% 40%, #fff, #ff0088 30%, #ff0000 60%, #ff0088 100%); }
+    88% { background:radial-gradient(circle at 40% 40%, #fff, #ff0044 30%, #ff4400 60%, #ff0044 100%); }
+    100% { background:radial-gradient(circle at 40% 40%, #fff, #ff0000 30%, #ff7700 60%, #ff0000 100%); }
+  }
 </style>
 </head>
 <body>
@@ -275,7 +293,17 @@ const SKINS = [
   { id: "toxic", name: "Ядовитый", price: 600, bg: "radial-gradient(circle at 40% 40%, #e0f2f1, #b2dfdb 30%, #009688 60%, #004d40 100%)" },
   { id: "neon", name: "Неон", price: 1200, bg: "radial-gradient(circle at 40% 40%, #fff, #e91e63 30%, #00e5ff 60%, #000 100%)" },
   { id: "gold", name: "Золотой", price: 2500, bg: "radial-gradient(circle at 40% 40%, #fff, #fff176 30%, #ffc107 60%, #ff8f00 100%)" },
-  { id: "2026", name: "Рождество", price: "Промокод", bg: "radial-gradient(circle at 40% 40%, #ff004d 0%, #ff4d00 30%, #0066ff 60%, #0033aa 100%)" }
+  { id: "2026", name: "Рождество", price: "Промокод", bg: "radial-gradient(circle at 40% 40%, #ff004d 0%, #ff4d00 30%, #0066ff 60%, #0033aa 100%)" },
+  { id: "purple", name: "Фиолетовый", price: 800, bg: "radial-gradient(circle at 40% 40%, #e1bee7, #ce93d8 30%, #9c27b0 60%, #4a148c 100%)" },
+  { id: "cyan", name: "Голубой", price: 950, bg: "radial-gradient(circle at 40% 40%, #b2ebf2, #80deea 30%, #00bcd4 60%, #006064 100%)" },
+  { id: "lime", name: "Лайм", price: 1100, bg: "radial-gradient(circle at 40% 40%, #f1f8e9, #dcedc8 30%, #cddc39 60%, #827717 100%)" },
+  { id: "pink", name: "Розовый", price: 1300, bg: "radial-gradient(circle at 40% 40%, #fce4ec, #f8bbd0 30%, #e91e63 60%, #880e4f 100%)" },
+  { id: "orange", name: "Оранжевый", price: 1400, bg: "radial-gradient(circle at 40% 40%, #ffe0b2, #ffcc80 30%, #ff9800 60%, #e65100 100%)" },
+  { id: "teal", name: "Бирюза", price: 1500, bg: "radial-gradient(circle at 40% 40%, #b2dfdb, #80cbc4 30%, #009688 60%, #00251a 100%)" },
+  { id: "indigo", name: "Индиго", price: 1800, bg: "radial-gradient(circle at 40% 40%, #c5cae9, #9fa8da 30%, #3f51b5 60%, #1a237e 100%)" },
+  { id: "red", name: "Красный", price: 1600, bg: "radial-gradient(circle at 40% 40%, #ffcdd2, #ef9a9a 30%, #f44336 60%, #b71c1c 100%)" },
+  { id: "glass", name: "Стеклянный", price: 2000, bg: "radial-gradient(circle at 40% 40%, rgba(255,255,255,0.9), rgba(173,216,230,0.8) 30%, rgba(100,149,237,0.7) 60%, rgba(25,25,112,0.9) 100%)" },
+  { id: "rainbow", name: "Радуга", price: 100000, bg: "radial-gradient(circle at 40% 40%, #fff, #ff0000 30%, #ff7700 60%, #ff0000 100%)", animated: true }
 ];
 
 const ACHIEVEMENTS = [
@@ -471,6 +499,7 @@ function saveProgress() {
 function applySkin() {
   const skin = SKINS.find(s => s.id === currentSkin) || SKINS[0];
   eye.style.background = skin.bg;
+  eye.classList.toggle('rainbow-eye', skin.animated === true);
 }
 
 // =============================================

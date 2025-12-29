@@ -30,6 +30,44 @@
     animation: gradientShift 20s ease infinite;
   }
 
+  /* Фон Луны */
+  .moon-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: linear-gradient(135deg, #0a0a2a 0%, #1a1a3a 25%, #2a2a4a 50%, #1a1a3a 75%, #0a0a2a 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
+    display: none;
+  }
+
+  /* Изображение Луны */
+  .moon-image {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle at center, #f0f0f0 0%, #c0c0c0 30%, #808080 70%, #404040 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 100px rgba(255, 255, 200, 0.5),
+                inset 0 0 50px rgba(0, 0, 0, 0.3);
+    z-index: -1;
+    opacity: 0.3;
+    display: none;
+  }
+
+  /* Лунные кратеры */
+  .moon-crater {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(100, 100, 100, 0.3);
+  }
+
   @keyframes gradientShift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -153,6 +191,203 @@
     100% { transform: rotate(360deg) scale(1); }
   }
 
+  /* Таймер корабля */
+  .ship-timer-container {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    background: rgba(20, 10, 40, 0.8);
+    border: 2px solid #2196F3;
+    border-radius: 15px;
+    padding: 15px;
+    z-index: 1000;
+    min-width: 180px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
+  }
+
+  .ship-timer-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #2196F3;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .ship-timer {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #4FC3F7;
+    text-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
+    font-family: monospace;
+  }
+
+  .ship-status {
+    font-size: 0.9rem;
+    color: #B0BEC5;
+    margin-top: 8px;
+    min-height: 20px;
+  }
+
+  /* Космический корабль */
+  .spaceship {
+    position: fixed;
+    bottom: -200px;
+    right: 10%;
+    width: 120px;
+    height: 60px;
+    z-index: 999;
+    transition: all 2s ease-in-out;
+    pointer-events: none;
+  }
+
+  .spaceship.arrived {
+    bottom: 50px;
+    pointer-events: auto;
+    animation: hoverShip 3s ease-in-out infinite;
+  }
+
+  .spaceship.departing {
+    bottom: -200px;
+  }
+
+  @keyframes hoverShip {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .ship-body {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #37474F, #546E7A);
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.5);
+  }
+
+  .ship-cockpit {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 30px;
+    background: linear-gradient(45deg, #29B6F6, #81D4FA);
+    border-radius: 50%;
+    border: 3px solid #1565C0;
+  }
+
+  .ship-wing {
+    position: absolute;
+    bottom: 0;
+    width: 80px;
+    height: 20px;
+    background: linear-gradient(45deg, #455A64, #607D8B);
+  }
+
+  .ship-wing.left {
+    left: -40px;
+    border-radius: 5px 0 0 5px;
+  }
+
+  .ship-wing.right {
+    right: -40px;
+    border-radius: 0 5px 5px 0;
+  }
+
+  .ship-engine {
+    position: absolute;
+    bottom: -10px;
+    width: 15px;
+    height: 30px;
+    background: linear-gradient(to top, #FF9800, #FF5722);
+    border-radius: 5px;
+    animation: engineGlow 1s infinite alternate;
+  }
+
+  @keyframes engineGlow {
+    0% { box-shadow: 0 0 10px rgba(255, 152, 0, 0.5); }
+    100% { box-shadow: 0 0 20px rgba(255, 87, 34, 0.8); }
+  }
+
+  .ship-engine.left-engine {
+    left: 30px;
+  }
+
+  .ship-engine.right-engine {
+    right: 30px;
+  }
+
+  /* Кнопка посадки */
+  .board-ship-btn {
+    position: fixed;
+    bottom: 120px;
+    right: calc(10% + 30px);
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    background: linear-gradient(45deg, #2196F3, #1976D2);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.5);
+    z-index: 1000;
+    transition: all 0.3s;
+    font-weight: bold;
+    display: none;
+  }
+
+  .board-ship-btn:hover {
+    background: linear-gradient(45deg, #42A5F5, #2196F3);
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(33, 150, 243, 0.7);
+  }
+
+  /* Уведомление о прибытии */
+  .ship-notification {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(45deg, rgba(33, 150, 243, 0.9), rgba(25, 118, 210, 0.9));
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    z-index: 2000;
+    box-shadow: 0 0 30px rgba(33, 150, 243, 0.7);
+    animation: pulseNotification 2s infinite;
+    display: none;
+  }
+
+  @keyframes pulseNotification {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.05); }
+  }
+
+  /* Луна на фоне */
+  .moon-particle {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: moonFloat linear infinite;
+    z-index: -1;
+    display: none;
+  }
+
+  @keyframes moonFloat {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
+  }
+
   h1 { font-size:3.5rem; margin:20px 0 30px; text-shadow:0 0 20px #603; position: relative; z-index: 1; }
   .eye-container { position:relative; width:300px; height:300px; margin:0 auto 40px; z-index: 1; }
   .eye { width:100%; height:100%; border-radius:50%; position:relative; overflow:hidden; transition:all .25s ease; cursor:pointer; box-shadow:0 0 60px rgba(48,96,255,.7),inset 0 0 80px rgba(0,0,0,.4); }
@@ -209,26 +444,6 @@
   @keyframes spin2d { 0% { transform:scale(1) rotate(0deg); } 50% { transform:scale(1.05); } 100% { transform:scale(1) rotate(360deg); } }
   .case-modal-label { font-size:2.5rem; color:#ffeb3b; margin-bottom:30px; text-shadow:0 0 20px #ffeb3b; font-weight:bold; }
   .case-modal-result { font-size:1.8rem; color:#76ff03; margin-top:40px; text-shadow:0 0 15px #76ff03; font-weight:bold; }
-  .case-modal-glow { position:absolute; inset:0; border-radius:40px; background:linear-gradient(45deg,transparent,rgba(255,215,0,.2),transparent); border:2px solid transparent; border-image:linear-gradient(45deg,transparent,#ffd700,transparent) 1; animation:glowPulse 2s ease-in-out infinite; pointer-events:none; }
-  @keyframes glowPulse { 0%, 100% { opacity:0.3; } 50% { opacity:1; } }
-
-  /* Радужный скин */
-  .rainbow-eye { animation:rainbowShift 8s ease-in-out infinite; }
-  @keyframes rainbowShift {
-    0% { background:radial-gradient(circle at 40% 40%, #fff, #ff0000 30%, #ff7700 60%, #ff0000 100%); }
-    8% { background:radial-gradient(circle at 40% 40%, #fff, #ff3300 30%, #ff8800 60%, #ff3300 100%); }
-    16% { background:radial-gradient(circle at 40% 40%, #fff, #ff7700 30%, #ffff00 60%, #ff7700 100%); }
-    24% { background:radial-gradient(circle at 40% 40%, #fff, #ffaa00 30%, #ffff00 60%, #ffaa00 100%); }
-    32% { background:radial-gradient(circle at 40% 40%, #fff, #00ff00 30%, #00ff88 60%, #00ff00 100%); }
-    40% { background:radial-gradient(circle at 40% 40%, #fff, #00ff44 30%, #00dd88 60%, #00ff44 100%); }
-    48% { background:radial-gradient(circle at 40% 40%, #fff, #0088ff 30%, #0000ff 60%, #0088ff 100%); }
-    56% { background:radial-gradient(circle at 40% 40%, #fff, #0055ff 30%, #0044ff 60%, #0055ff 100%); }
-    64% { background:radial-gradient(circle at 40% 40%, #fff, #4400ff 30%, #9900ff 60%, #4400ff 100%); }
-    72% { background:radial-gradient(circle at 40% 40%, #fff, #7700ff 30%, #9944ff 60%, #7700ff 100%); }
-    80% { background:radial-gradient(circle at 40% 40%, #fff, #ff0088 30%, #ff0000 60%, #ff0088 100%); }
-    88% { background:radial-gradient(circle at 40% 40%, #fff, #ff0044 30%, #ff4400 60%, #ff0044 100%); }
-    100% { background:radial-gradient(circle at 40% 40%, #fff, #ff0000 30%, #ff7700 60%, #ff0000 100%); }
-  }
 
   /* Стили для торговца */
   .trader-btn {
@@ -522,6 +737,23 @@
       font-size: 1rem;
     }
     h1 { font-size: 2.8rem; }
+    .ship-timer-container {
+      top: 70px;
+      left: 10px;
+      padding: 10px;
+      min-width: 150px;
+    }
+    .spaceship {
+      width: 80px;
+      height: 40px;
+      right: 5%;
+    }
+    .board-ship-btn {
+      bottom: 80px;
+      right: calc(5% + 15px);
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
   }
 
   @media (max-width: 480px) {
@@ -545,20 +777,54 @@
     .sphere {
       filter: blur(20px);
     }
+    .ship-timer-container {
+      top: 60px;
+      left: 5px;
+      padding: 8px;
+      min-width: 130px;
+    }
+    .ship-timer {
+      font-size: 1.4rem;
+    }
   }
 </style>
 </head>
 <body>
 
 <!-- Анимированный фон -->
-<div class="animated-bg"></div>
+<div class="animated-bg" id="mainBg"></div>
+<div class="moon-bg" id="moonBg"></div>
+<div class="moon-image" id="moonImage"></div>
 <div class="particles" id="particles"></div>
 <div class="pulsing-spheres" id="pulsingSpheres"></div>
 <div class="stars" id="stars"></div>
 <div class="spirals" id="spirals"></div>
 
+<!-- Таймер корабля -->
+<div class="ship-timer-container" id="shipTimerContainer">
+  <div class="ship-timer-title">🚀 Корабль</div>
+  <div class="ship-timer" id="shipTimer">10:00</div>
+  <div class="ship-status" id="shipStatus">Прибытие через</div>
+</div>
+
 <!-- Кнопка инвентаря -->
 <button class="inventory-btn" id="toggleInventory">🎒 Инвентарь</button>
+
+<!-- Космический корабль -->
+<div class="spaceship" id="spaceship">
+  <div class="ship-body"></div>
+  <div class="ship-cockpit"></div>
+  <div class="ship-wing left"></div>
+  <div class="ship-wing right"></div>
+  <div class="ship-engine left-engine"></div>
+  <div class="ship-engine right-engine"></div>
+</div>
+
+<!-- Кнопка посадки -->
+<button class="board-ship-btn" id="boardShipBtn">Сесть в корабль</button>
+
+<!-- Уведомление о прибытии -->
+<div class="ship-notification" id="shipNotification">🚀 Корабль прибыл!</div>
 
 <div class="main-content">
   <h1>Глаз-кликер</h1>
@@ -727,6 +993,325 @@
 </div>
 
 <script>
+// =============================================
+// КОСМИЧЕСКИЙ КОРАБЛЬ
+// =============================================
+const SHIP_CONFIG = {
+  ARRIVAL_INTERVAL: 10 * 60 * 1000, // 10 минут в миллисекундах
+  STAY_DURATION: 3 * 60 * 1000, // 3 минуты на Луне
+  MOON_MULTIPLIER: 10, // Множитель на Луне
+  STORAGE_KEY: 'eyeClickerShipData'
+};
+
+let shipData = JSON.parse(localStorage.getItem(SHIP_CONFIG.STORAGE_KEY)) || {
+  nextArrival: Date.now() + SHIP_CONFIG.ARRIVAL_INTERVAL,
+  isOnMoon: false,
+  moonTimeLeft: 0,
+  lastUpdate: Date.now()
+};
+
+let isShipArrived = false;
+let isOnMoon = shipData.isOnMoon;
+let moonTimeLeft = shipData.moonTimeLeft;
+let shipInterval = null;
+let moonInterval = null;
+let moonMultiplierActive = false;
+
+// DOM элементы корабля
+const spaceship = document.getElementById('spaceship');
+const boardShipBtn = document.getElementById('boardShipBtn');
+const shipNotification = document.getElementById('shipNotification');
+const shipTimer = document.getElementById('shipTimer');
+const shipStatus = document.getElementById('shipStatus');
+const shipTimerContainer = document.getElementById('shipTimerContainer');
+const mainBg = document.getElementById('mainBg');
+const moonBg = document.getElementById('moonBg');
+const moonImage = document.getElementById('moonImage');
+
+// Инициализация корабля
+function initSpaceship() {
+  // Обновляем данные если игра была закрыта
+  const timePassed = Date.now() - shipData.lastUpdate;
+  
+  if (shipData.isOnMoon) {
+    // Если игрок был на Луне, уменьшаем оставшееся время
+    moonTimeLeft = Math.max(0, shipData.moonTimeLeft - timePassed);
+    if (moonTimeLeft <= 0) {
+      // Время на Луне истекло
+      isOnMoon = false;
+      shipData.isOnMoon = false;
+      moonTimeLeft = 0;
+      returnFromMoon();
+    } else {
+      // Игрок все еще на Луне
+      isOnMoon = true;
+      goToMoon();
+      startMoonTimer();
+    }
+  }
+  
+  // Обновляем таймер прибытия
+  if (!shipData.isOnMoon) {
+    const timeUntilArrival = shipData.nextArrival - Date.now();
+    if (timeUntilArrival <= 0) {
+      // Корабль должен был прибыть
+      shipArrival();
+    } else {
+      startShipTimer();
+    }
+  }
+  
+  saveShipData();
+}
+
+// Сохранение данных корабля
+function saveShipData() {
+  shipData.lastUpdate = Date.now();
+  shipData.isOnMoon = isOnMoon;
+  shipData.moonTimeLeft = moonTimeLeft;
+  localStorage.setItem(SHIP_CONFIG.STORAGE_KEY, JSON.stringify(shipData));
+}
+
+// Таймер до прибытия корабля
+function startShipTimer() {
+  if (shipInterval) clearInterval(shipInterval);
+  
+  shipInterval = setInterval(() => {
+    const timeUntilArrival = shipData.nextArrival - Date.now();
+    
+    if (timeUntilArrival <= 0) {
+      clearInterval(shipInterval);
+      shipArrival();
+      return;
+    }
+    
+    const minutes = Math.floor(timeUntilArrival / 60000);
+    const seconds = Math.floor((timeUntilArrival % 60000) / 1000);
+    shipTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    shipStatus.textContent = 'Прибытие через';
+  }, 1000);
+}
+
+// Прибытие корабля
+function shipArrival() {
+  isShipArrived = true;
+  spaceship.classList.add('arrived');
+  boardShipBtn.style.display = 'block';
+  shipNotification.style.display = 'block';
+  shipTimer.textContent = 'ПРИБЫЛ';
+  shipStatus.textContent = 'Корабль ожидает';
+  shipTimerContainer.style.borderColor = '#4CAF50';
+  shipTimerContainer.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.5)';
+  
+  // Автоматически скрываем уведомление через 5 секунд
+  setTimeout(() => {
+    shipNotification.style.display = 'none';
+  }, 5000);
+  
+  // Корабль улетает через 1 минуту если игрок не сел
+  setTimeout(() => {
+    if (!isOnMoon && isShipArrived) {
+      shipDeparture();
+    }
+  }, 60000);
+}
+
+// Отправление корабля
+function shipDeparture() {
+  if (isOnMoon) return; // Не улетаем если игрок на Луне
+  
+  isShipArrived = false;
+  spaceship.classList.remove('arrived');
+  spaceship.classList.add('departing');
+  boardShipBtn.style.display = 'none';
+  
+  // Сброс таймера на следующий прилет
+  shipData.nextArrival = Date.now() + SHIP_CONFIG.ARRIVAL_INTERVAL;
+  saveShipData();
+  
+  // Через 2 секунды сбрасываем анимацию и запускаем таймер
+  setTimeout(() => {
+    spaceship.classList.remove('departing');
+    shipTimerContainer.style.borderColor = '#2196F3';
+    shipTimerContainer.style.boxShadow = '0 0 20px rgba(33, 150, 243, 0.3)';
+    startShipTimer();
+  }, 2000);
+}
+
+// Посадка в корабль
+function boardSpaceship() {
+  if (!isShipArrived || isOnMoon) return;
+  
+  isOnMoon = true;
+  isShipArrived = false;
+  boardShipBtn.style.display = 'none';
+  spaceship.classList.remove('arrived');
+  spaceship.classList.add('departing');
+  
+  // Переход на Луну
+  setTimeout(() => {
+    goToMoon();
+    
+    // Запускаем таймер пребывания на Луне
+    moonTimeLeft = SHIP_CONFIG.STAY_DURATION;
+    startMoonTimer();
+    
+    // Автоматическое возвращение через 3 минуты
+    setTimeout(() => {
+      if (isOnMoon) {
+        returnFromMoon();
+      }
+    }, SHIP_CONFIG.STAY_DURATION);
+    
+    // Сброс таймера на следующий прилет
+    shipData.nextArrival = Date.now() + SHIP_CONFIG.ARRIVAL_INTERVAL;
+    saveShipData();
+  }, 2000);
+}
+
+// Переход на Луну
+function goToMoon() {
+  isOnMoon = true;
+  moonMultiplierActive = true;
+  
+  // Меняем фон
+  mainBg.style.display = 'none';
+  moonBg.style.display = 'block';
+  moonImage.style.display = 'block';
+  
+  // Создаем кратеры на Луне
+  createMoonCraters();
+  
+  // Создаем частицы для Луны
+  createMoonParticles();
+  
+  // Обновляем интерфейс
+  shipTimer.textContent = 'ЛУНА';
+  shipStatus.textContent = '×10 за клик';
+  shipTimerContainer.style.borderColor = '#FF9800';
+  shipTimerContainer.style.boxShadow = '0 0 20px rgba(255, 152, 0, 0.5)';
+  
+  // Показываем уведомление
+  shipNotification.textContent = '🌕 Добро пожаловать на Луну! ×10 за клик!';
+  shipNotification.style.display = 'block';
+  shipNotification.style.background = 'linear-gradient(45deg, rgba(255, 152, 0, 0.9), rgba(245, 124, 0, 0.9))';
+  
+  setTimeout(() => {
+    shipNotification.style.display = 'none';
+  }, 5000);
+}
+
+// Возвращение с Луны
+function returnFromMoon() {
+  isOnMoon = false;
+  moonMultiplierActive = false;
+  
+  // Возвращаем обычный фон
+  moonBg.style.display = 'none';
+  moonImage.style.display = 'none';
+  mainBg.style.display = 'block';
+  
+  // Удаляем лунные частицы
+  document.querySelectorAll('.moon-particle').forEach(p => p.remove());
+  document.querySelectorAll('.moon-crater').forEach(c => c.remove());
+  
+  // Обновляем интерфейс
+  shipTimer.textContent = '10:00';
+  shipStatus.textContent = 'Следующий прилет';
+  shipTimerContainer.style.borderColor = '#2196F3';
+  shipTimerContainer.style.boxShadow = '0 0 20px rgba(33, 150, 243, 0.3)';
+  
+  // Показываем уведомление
+  shipNotification.textContent = '🚀 Возвращение на Землю!';
+  shipNotification.style.display = 'block';
+  shipNotification.style.background = 'linear-gradient(45deg, rgba(33, 150, 243, 0.9), rgba(25, 118, 210, 0.9))';
+  
+  setTimeout(() => {
+    shipNotification.style.display = 'none';
+  }, 3000);
+  
+  // Запускаем таймер корабля заново
+  startShipTimer();
+  
+  // Сохраняем данные
+  shipData.isOnMoon = false;
+  shipData.moonTimeLeft = 0;
+  saveShipData();
+}
+
+// Таймер пребывания на Луне
+function startMoonTimer() {
+  if (moonInterval) clearInterval(moonInterval);
+  
+  moonInterval = setInterval(() => {
+    if (!isOnMoon) {
+      clearInterval(moonInterval);
+      return;
+    }
+    
+    moonTimeLeft -= 1000;
+    
+    if (moonTimeLeft <= 0) {
+      clearInterval(moonInterval);
+      returnFromMoon();
+      return;
+    }
+    
+    const minutes = Math.floor(moonTimeLeft / 60000);
+    const seconds = Math.floor((moonTimeLeft % 60000) / 1000);
+    shipTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    shipStatus.textContent = 'Осталось на Луне';
+    
+    // Сохраняем оставшееся время
+    shipData.moonTimeLeft = moonTimeLeft;
+    saveShipData();
+  }, 1000);
+}
+
+// Создание кратеров на Луне
+function createMoonCraters() {
+  const craterCount = 15;
+  
+  for (let i = 0; i < craterCount; i++) {
+    const crater = document.createElement('div');
+    crater.className = 'moon-crater';
+    
+    // Случайный размер от 10px до 40px
+    const size = Math.random() * 30 + 10;
+    crater.style.width = `${size}px`;
+    crater.style.height = `${size}px`;
+    
+    // Случайная позиция на Луне
+    const angle = Math.random() * Math.PI * 2;
+    const distance = Math.random() * 120;
+    crater.style.left = `calc(50% + ${Math.cos(angle) * distance}px)`;
+    crater.style.top = `calc(50% + ${Math.sin(angle) * distance}px)`;
+    
+    moonImage.appendChild(crater);
+  }
+}
+
+// Создание частиц для Луны
+function createMoonParticles() {
+  const particleCount = 30;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'moon-particle';
+    
+    // Случайная позиция
+    particle.style.left = `${Math.random() * 100}%`;
+    
+    // Случайная задержка и длительность
+    const delay = Math.random() * 5;
+    const duration = Math.random() * 10 + 5;
+    particle.style.animationDelay = `${delay}s`;
+    particle.style.animationDuration = `${duration}s`;
+    
+    document.body.appendChild(particle);
+  }
+}
+
 // =============================================
 // АНИМИРОВАННЫЙ ФОН
 // =============================================
@@ -1596,6 +2181,7 @@ function saveProgress() {
   localStorage.setItem(STORAGE.clickMultiplier, clickMultiplier);
   localStorage.setItem(STORAGE.totalClicks, totalClicks);
   saveInventory();
+  saveShipData();
 }
 
 function applySkin() {
@@ -1876,10 +2462,18 @@ function renderAchievements() {
   });
 }
 
-// СОБЫТИЯ
+// СОБЫТИЯ КЛИКА (обновленная с учетом Луны)
+const originalEyeClick = eye.onclick;
 eye.onclick = () => {
   if (energy > 0) {
-    score += clickMultiplier;
+    let pointsPerClick = clickMultiplier;
+    
+    // Если на Луне, умножаем на 10
+    if (moonMultiplierActive) {
+      pointsPerClick *= SHIP_CONFIG.MOON_MULTIPLIER;
+    }
+    
+    score += pointsPerClick;
     energy--;
     totalClicks++;
     checkAchievements();
@@ -1889,6 +2483,10 @@ eye.onclick = () => {
   }
 };
 
+// Событие для посадки в корабль
+boardShipBtn.onclick = boardSpaceship;
+
+// События для остальных кнопок
 btnShop.onclick = () => { shop.style.display = 'block'; btnShop.style.display = 'none'; renderShop(); };
 btnCloseShop.onclick = () => { shop.style.display = 'none'; btnShop.style.display = 'inline-block'; };
 
@@ -1915,6 +2513,9 @@ renderInventory();
 
 // Создаем анимированный фон
 createAnimatedBackground();
+
+// Инициализация корабля
+initSpaceship();
 
 // СТАРТ
 updateUI();

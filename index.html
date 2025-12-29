@@ -354,7 +354,7 @@ const nextMultiplierEl = document.getElementById('nextMultiplier');
 // =============================================
 // ПЕРЕРЕЖДЕНИЯ
 // =============================================
-function getRequiredPointsForLevel(level) {
+function updatePrestigeUI() {
   currentPrestigeEl.textContent = prestigeLevel;
   multiplierEl.textContent = `×${clickMultiplier}`;
 
@@ -364,8 +364,8 @@ function getRequiredPointsForLevel(level) {
     return;
   }
 
+  const required = PRESTIGE_COSTS[prestigeLevel];
   const nextLevel = prestigeLevel + 1;
-  const required = getRequiredPointsForLevel(nextLevel - 1);
   nextMultiplierEl.textContent = nextLevel + 1;
 
   const enoughAchievements = [...completed].length >= 2;

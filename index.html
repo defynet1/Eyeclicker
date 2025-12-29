@@ -9,34 +9,172 @@
   body {
     margin:0;
     min-height:100vh;
-    background:linear-gradient(135deg,#0f001a,#1a0033);
     font-family:system-ui,sans-serif;
     color:#f0e8ff;
     text-align:center;  
     padding:20px;
+    position: relative;
+    overflow-x: hidden;
   }
-  h1 { font-size:3.5rem; margin:20px 0 30px; text-shadow:0 0 20px #603; }
-  .eye-container { position:relative; width:300px; height:300px; margin:0 auto 40px; }
+
+  /* Анимированный фон */
+  .animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: linear-gradient(135deg, #0f001a 0%, #1a0033 25%, #2d004d 50%, #1a0033 75%, #0f001a 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Плавающие частицы */
+  .particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: float linear infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+    25% { opacity: 0.5; }
+    50% { opacity: 0.3; }
+    75% { opacity: 0.5; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0.3; }
+  }
+
+  /* Пульсирующие сферы */
+  .pulsing-spheres {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .sphere {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(123, 31, 162, 0.2), transparent 70%);
+    filter: blur(40px);
+    animation: pulseSphere 8s ease-in-out infinite;
+  }
+
+  @keyframes pulseSphere {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.2); opacity: 0.5; }
+  }
+
+  /* Мерцающие звезды */
+  .stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.5); }
+  }
+
+  /* Вращающиеся спирали */
+  .spirals {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.1;
+  }
+
+  .spiral {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border: 1px solid rgba(123, 31, 162, 0.3);
+    border-radius: 50%;
+    animation: rotateSpiral 40s linear infinite;
+  }
+
+  .spiral:nth-child(2) {
+    width: 500px;
+    height: 500px;
+    border-color: rgba(76, 175, 80, 0.2);
+    animation-duration: 60s;
+    animation-direction: reverse;
+  }
+
+  .spiral:nth-child(3) {
+    width: 700px;
+    height: 700px;
+    border-color: rgba(255, 152, 0, 0.2);
+    animation-duration: 80s;
+  }
+
+  @keyframes rotateSpiral {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  h1 { font-size:3.5rem; margin:20px 0 30px; text-shadow:0 0 20px #603; position: relative; z-index: 1; }
+  .eye-container { position:relative; width:300px; height:300px; margin:0 auto 40px; z-index: 1; }
   .eye { width:100%; height:100%; border-radius:50%; position:relative; overflow:hidden; transition:all .25s ease; cursor:pointer; box-shadow:0 0 60px rgba(48,96,255,.7),inset 0 0 80px rgba(0,0,0,.4); }
   .eye:active:not(.low-energy) { transform:scale(0.94); }
   .pupil { width:120px; height:120px; background:#000814; border-radius:50%; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:inset 0 0 30px #000; }
   .highlight { width:44px; height:44px; background:white; border-radius:50%; position:absolute; top:30%; left:60%; opacity:.8; filter:blur(3px); }
-  .stats { max-width:500px; margin:0 auto 30px; padding:20px; background:rgba(20,10,40,.6); border-radius:16px; border:1px solid #4a148c; }
+  .stats { max-width:500px; margin:0 auto 30px; padding:20px; background:rgba(20,10,40,.6); border-radius:16px; border:1px solid #4a148c; backdrop-filter:blur(10px); position: relative; z-index: 1; }
   .energy-bar-container { width:100%; height:24px; background:#1a0033; border-radius:12px; overflow:hidden; border:2px solid #4a148c; }
   .energy-bar { height:100%; background:linear-gradient(90deg,#00e676,#76ff03); transition:width .6s ease; }
-  .score { font-size:4.5rem; margin:15px 0 5px; text-shadow:0 0 25px #609; }
-  .multiplier { font-size:1.4rem; color:#ffd700; margin-bottom:10px; }
-  .prestige-btn { padding:14px 40px; font-size:1.3rem; background:#c62828; color:white; border:none; border-radius:30px; cursor:pointer; margin:20px auto; display:block; font-weight:bold; }
+  .score { font-size:4.5rem; margin:15px 0 5px; text-shadow:0 0 25px #609; position: relative; z-index: 1; }
+  .multiplier { font-size:1.4rem; color:#ffd700; margin-bottom:10px; position: relative; z-index: 1; }
+  .prestige-btn { padding:14px 40px; font-size:1.3rem; background:#c62828; color:white; border:none; border-radius:30px; cursor:pointer; margin:20px auto; display:block; font-weight:bold; position: relative; z-index: 1; }
   .prestige-btn:disabled { background:#555; cursor:not-allowed; }
   .prestige-info { font-size:1.1rem; margin:10px 0; color:#ffeb3b; }
-  .btn { padding:12px 28px; font-size:1.1rem; margin:12px 8px; border:none; border-radius:30px; cursor:pointer; font-weight:bold; transition:all .2s; }
+  .btn { padding:12px 28px; font-size:1.1rem; margin:12px 8px; border:none; border-radius:30px; cursor:pointer; font-weight:bold; transition:all .2s; position: relative; z-index: 1; }
   .btn-shop { background:#7b1fa2; color:white; }
   .btn-shop:hover { background:#9c27b0; transform:translateY(-2px); }
   .btn-ach { background:#ff6d00; color:white; }
   .btn-ach:hover { background:#ff8a33; transform:translateY(-2px); }
   .btn-draw { background:#00bfa5; color:white; }
   .btn-draw:hover { background:#00d6b2; transform:translateY(-2px); }
-  #shop,#achievements,#prestige { display:none; max-width:640px; margin:40px auto; padding:25px; background:rgba(20,10,40,.8); border-radius:16px; border:1px solid #7b1fa2; backdrop-filter:blur(8px); }
+  #shop,#achievements,#prestige { display:none; max-width:640px; margin:40px auto; padding:25px; background:rgba(20,10,40,.8); border-radius:16px; border:1px solid #7b1fa2; backdrop-filter:blur(15px); position: relative; z-index: 1; }
   .draw-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.9); backdrop-filter:blur(12px); z-index:2000; align-items:center; justify-content:center; }
   .draw-modal.active { display:flex; }
   .draw-modal-content { background:linear-gradient(135deg,#1a0033,#2d004d,#1a0033); border:2px solid #7b1fa2; border-radius:20px; padding:20px; text-align:center; box-shadow:0 0 80px rgba(123,31,162,.6); }
@@ -104,6 +242,8 @@
     transition: all .2s;
     background: #4CAF50;
     color: white;
+    position: relative;
+    z-index: 1;
   }
   
   .trader-btn:hover {
@@ -381,6 +521,7 @@
       padding: 10px 20px;
       font-size: 1rem;
     }
+    h1 { font-size: 2.8rem; }
   }
 
   @media (max-width: 480px) {
@@ -388,7 +529,7 @@
     .case-roulette { font-size:6rem; min-height:100px; letter-spacing:5px; text-shadow:0 0 20px #ff8c00,0 0 40px #ff6b00; }
     .case-modal-label { font-size:1.5rem; margin-bottom:15px; }
     .case-modal-result { font-size:1.1rem; margin-top:20px; }
-    h1 { font-size:2.5rem; }
+    h1 { font-size:2.2rem; }
     .score { font-size:3rem; }
     .multiplier { font-size:1rem; }
     .inventory-btn, .promo-toggle-btn {
@@ -401,10 +542,20 @@
       right: 10px;
       top: 10px;
     }
+    .sphere {
+      filter: blur(20px);
+    }
   }
 </style>
 </head>
 <body>
+
+<!-- Анимированный фон -->
+<div class="animated-bg"></div>
+<div class="particles" id="particles"></div>
+<div class="pulsing-spheres" id="pulsingSpheres"></div>
+<div class="stars" id="stars"></div>
+<div class="spirals" id="spirals"></div>
 
 <!-- Кнопка инвентаря -->
 <button class="inventory-btn" id="toggleInventory">🎒 Инвентарь</button>
@@ -576,6 +727,110 @@
 </div>
 
 <script>
+// =============================================
+// АНИМИРОВАННЫЙ ФОН
+// =============================================
+function createAnimatedBackground() {
+  // Создаем частицы
+  const particlesContainer = document.getElementById('particles');
+  const particleCount = 50;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    
+    // Случайный размер от 2px до 8px
+    const size = Math.random() * 6 + 2;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    
+    // Случайный цвет
+    const colors = [
+      'rgba(123, 31, 162, 0.5)', // Фиолетовый
+      'rgba(76, 175, 80, 0.5)',  // Зеленый
+      'rgba(255, 152, 0, 0.5)',  // Оранжевый
+      'rgba(33, 150, 243, 0.5)', // Голубой
+      'rgba(233, 30, 99, 0.5)',  // Розовый
+      'rgba(255, 215, 0, 0.5)'   // Золотой
+    ];
+    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+    
+    // Случайная позиция
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    
+    // Случайная длительность анимации
+    const duration = Math.random() * 20 + 10; // от 10 до 30 секунд
+    const delay = Math.random() * 5; // задержка от 0 до 5 секунд
+    particle.style.animationDuration = `${duration}s`;
+    particle.style.animationDelay = `${delay}s`;
+    
+    particlesContainer.appendChild(particle);
+  }
+  
+  // Создаем пульсирующие сферы
+  const spheresContainer = document.getElementById('pulsingSpheres');
+  const sphereCount = 5;
+  
+  for (let i = 0; i < sphereCount; i++) {
+    const sphere = document.createElement('div');
+    sphere.className = 'sphere';
+    
+    // Случайный размер от 100px до 300px
+    const size = Math.random() * 200 + 100;
+    sphere.style.width = `${size}px`;
+    sphere.style.height = `${size}px`;
+    
+    // Случайная позиция
+    sphere.style.left = `${Math.random() * 100}%`;
+    sphere.style.top = `${Math.random() * 100}%`;
+    
+    // Случайная длительность анимации
+    const duration = Math.random() * 10 + 6; // от 6 до 16 секунд
+    const delay = Math.random() * 5;
+    sphere.style.animationDuration = `${duration}s`;
+    sphere.style.animationDelay = `${delay}s`;
+    
+    spheresContainer.appendChild(sphere);
+  }
+  
+  // Создаем мерцающие звезды
+  const starsContainer = document.getElementById('stars');
+  const starCount = 100;
+  
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    
+    // Случайная позиция
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}%`;
+    
+    // Случайная длительность анимации
+    const duration = Math.random() * 4 + 1; // от 1 до 5 секунд
+    const delay = Math.random() * 3;
+    star.style.animationDuration = `${duration}s`;
+    star.style.animationDelay = `${delay}s`;
+    
+    starsContainer.appendChild(star);
+  }
+  
+  // Создаем вращающиеся спирали
+  const spiralsContainer = document.getElementById('spirals');
+  
+  for (let i = 0; i < 3; i++) {
+    const spiral = document.createElement('div');
+    spiral.className = 'spiral';
+    
+    // Центрируем спирали
+    spiral.style.left = '50%';
+    spiral.style.top = '50%';
+    spiral.style.transform = 'translate(-50%, -50%)';
+    
+    spiralsContainer.appendChild(spiral);
+  }
+}
+
 // =============================================
 // ОСТАЛЬНОЙ КОД (клики, магазин, достижения, перерождения, промокоды)
 // =============================================
@@ -1657,6 +1912,9 @@ setInterval(() => {
 // Инициализация торговца при загрузке
 loadTraderItems();
 renderInventory();
+
+// Создаем анимированный фон
+createAnimatedBackground();
 
 // СТАРТ
 updateUI();

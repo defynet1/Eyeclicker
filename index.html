@@ -6,6 +6,317 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 <style>
+  /* Существующие стили остаются без изменений */
+  /* Добавляем новые стили для мини-игры */
+
+  /* Кнопка мини-игры */
+  .minigame-btn {
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    margin: 12px 8px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all .2s;
+    background: linear-gradient(45deg, #9C27B0, #673AB7);
+    color: white;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .minigame-btn:hover {
+    background: linear-gradient(45deg, #BA68C8, #7E57C2);
+    transform: translateY(-2px);
+  }
+
+  /* Модальное окно мини-игры */
+  .minigame-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.95);
+    backdrop-filter: blur(12px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .minigame-modal.active {
+    display: flex;
+  }
+  
+  .minigame-modal-content {
+    background: linear-gradient(135deg, #0f001a, #1a0033, #2d004d);
+    border: 3px solid #9C27B0;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 0 80px rgba(156, 39, 176, 0.6);
+    max-width: 800px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Игровое поле */
+  .minigame-field {
+    position: relative;
+    width: 600px;
+    height: 400px;
+    background: linear-gradient(180deg, #0a0a2a 0%, #1a1a4a 100%);
+    border: 2px solid #9C27B0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px auto;
+    cursor: crosshair;
+  }
+
+  /* Астероиды */
+  .asteroid {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #8B4513, #654321, #3D2506);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+
+  .asteroid:hover {
+    transform: scale(1.1);
+  }
+
+  .asteroid.destroyed {
+    animation: explode 0.5s forwards;
+  }
+
+  @keyframes explode {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(0); opacity: 0; }
+  }
+
+  /* Глаз в центре */
+  .minigame-eye {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle at 40% 40%, #fff 0%, #d0e8ff 30%, #80b0ff 60%, #3060ff 100%);
+    border-radius: 50%;
+    border: 3px solid #2196F3;
+    box-shadow: 0 0 40px rgba(33, 150, 243, 0.7);
+    z-index: 2;
+  }
+
+  .minigame-eye .pupil {
+    width: 30px;
+    height: 30px;
+    background: #000814;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .minigame-eye .highlight {
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 30%;
+    left: 60%;
+    opacity: .8;
+  }
+
+  /* Статистика игры */
+  .minigame-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(20,10,40,.8);
+    border-radius: 15px;
+    border: 1px solid #7b1fa2;
+  }
+
+  .stat-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: #b0bec5;
+    margin-bottom: 5px;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffd700;
+  }
+
+  /* Таймер игры */
+  .minigame-timer {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #76ff03;
+    margin: 20px 0;
+    text-shadow: 0 0 15px #76ff03;
+  }
+
+  /* Кнопки управления */
+  .minigame-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 25px;
+  }
+
+  .minigame-controls .btn {
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all .2s;
+  }
+
+  .start-game-btn {
+    background: linear-gradient(45deg, #4CAF50, #2E7D32);
+    color: white;
+  }
+
+  .start-game-btn:hover {
+    background: linear-gradient(45deg, #66BB6A, #388E3C);
+    transform: translateY(-3px);
+  }
+
+  .close-minigame-btn {
+    background: linear-gradient(45deg, #f44336, #c62828);
+    color: white;
+  }
+
+  .close-minigame-btn:hover {
+    background: linear-gradient(45deg, #ef5350, #d32f2f);
+    transform: translateY(-3px);
+  }
+
+  /* Уровни сложности */
+  .difficulty-selector {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+  }
+
+  .difficulty-btn {
+    padding: 10px 25px;
+    background: rgba(80, 40, 120, .4);
+    border: 2px solid #7b1fa2;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    transition: all .3s;
+  }
+
+  .difficulty-btn.active {
+    background: #7b1fa2;
+    border-color: #9c27b0;
+    box-shadow: 0 0 15px rgba(123, 31, 162, 0.5);
+  }
+
+  .difficulty-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Результаты игры */
+  .game-results {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid #4CAF50;
+    border-radius: 15px;
+    animation: fadeIn 0.5s;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .results-title {
+    font-size: 1.4rem;
+    color: #ffd700;
+    margin-bottom: 15px;
+  }
+
+  .results-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .result-item {
+    text-align: center;
+  }
+
+  .result-label {
+    font-size: 0.9rem;
+    color: #b0bec5;
+    margin-bottom: 5px;
+  }
+
+  .result-value {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #76ff03;
+  }
+
+  /* Адаптивность */
+  @media (max-width: 768px) {
+    .minigame-field {
+      width: 95%;
+      height: 300px;
+    }
+    
+    .minigame-stats {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .minigame-controls {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .difficulty-selector {
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .minigame-field {
+      height: 250px;
+    }
+    
+    .minigame-modal-content {
+      padding: 20px;
+    }
+    
+    .minigame-timer {
+      font-size: 1.5rem;
+    }
+  }
+
   body {
     margin:0;
     min-height:100vh;
@@ -876,6 +1187,7 @@
     <button class="btn btn-shop" id="toggleShop">Магазин</button>
     <button class="btn btn-ach" id="toggleAch">Достижения</button>
     <button class="btn trader-btn" id="toggleTrader">Торговец</button>
+    <button class="btn minigame-btn" id="toggleMinigame">Защита глаза</button> <!-- НОВАЯ КНОПКА -->
     <button class="btn prestige-btn" id="togglePrestige">Перерождение</button>
     <button class="btn btn-draw" id="toggleDraw">Нарисовать глаз</button>
   </div>
@@ -891,6 +1203,73 @@
       </div>
       
       <button class="btn" id="closeInventory" style="margin-top: 25px; background: #d81b60;">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- Добавляем модальное окно мини-игры -->
+  <div class="minigame-modal" id="minigameModal">
+    <div class="minigame-modal-content">
+      <h2>🛡️ Защита глаза</h2>
+      <p style="color: #b0bec5; margin-bottom: 20px;">Защищай глаз от астероидов! Кликай по астероидам, чтобы уничтожить их.</p>
+      
+      <div class="difficulty-selector" id="difficultySelector">
+        <div class="difficulty-btn active" data-difficulty="easy">Лёгкий</div>
+        <div class="difficulty-btn" data-difficulty="medium">Средний</div>
+        <div class="difficulty-btn" data-difficulty="hard">Сложный</div>
+      </div>
+      
+      <div class="minigame-stats">
+        <div class="stat-item">
+          <div class="stat-label">Очки</div>
+          <div class="stat-value" id="minigameScore">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Астероиды</div>
+          <div class="stat-value" id="asteroidsDestroyed">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Время</div>
+          <div class="minigame-timer" id="minigameTimer">60</div>
+        </div>
+      </div>
+      
+      <div class="minigame-field" id="minigameField">
+        <div class="minigame-eye">
+          <div class="pupil"></div>
+          <div class="highlight"></div>
+        </div>
+        <!-- Астероиды будут добавляться динамически -->
+      </div>
+      
+      <div class="game-results" id="gameResults" style="display: none;">
+        <div class="results-title">🎮 Игра завершена!</div>
+        <div class="results-stats">
+          <div class="result-item">
+            <div class="result-label">Набрано очков</div>
+            <div class="result-value" id="finalScore">0</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Уничтожено астероидов</div>
+            <div class="result-value" id="finalAsteroids">0</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Получено энергии</div>
+            <div class="result-value" id="finalEnergy">0</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Уровень сложности</div>
+            <div class="result-value" id="finalDifficulty">Лёгкий</div>
+          </div>
+        </div>
+        <div style="margin-top: 15px; color: #ffd700; font-size: 1.1rem;">
+          <span id="bonusMessage"></span>
+        </div>
+      </div>
+      
+      <div class="minigame-controls">
+        <button class="btn start-game-btn" id="startGameBtn">Начать игру</button>
+        <button class="btn close-minigame-btn" id="closeMinigameBtn">Закрыть</button>
+      </div>
     </div>
   </div>
 
@@ -993,6 +1372,380 @@
 </div>
 
 <script>
+// =============================================
+// МИНИ-ИГРА "ЗАЩИТА ГЛАЗА"
+// =============================================
+
+// DOM элементы мини-игры
+const toggleMinigameBtn = document.getElementById('toggleMinigame');
+const minigameModal = document.getElementById('minigameModal');
+const closeMinigameBtn = document.getElementById('closeMinigameBtn');
+const startGameBtn = document.getElementById('startGameBtn');
+const minigameField = document.getElementById('minigameField');
+const minigameScoreEl = document.getElementById('minigameScore');
+const asteroidsDestroyedEl = document.getElementById('asteroidsDestroyed');
+const minigameTimerEl = document.getElementById('minigameTimer');
+const gameResults = document.getElementById('gameResults');
+const finalScoreEl = document.getElementById('finalScore');
+const finalAsteroidsEl = document.getElementById('finalAsteroids');
+const finalEnergyEl = document.getElementById('finalEnergy');
+const finalDifficultyEl = document.getElementById('finalDifficulty');
+const bonusMessageEl = document.getElementById('bonusMessage');
+const difficultySelector = document.getElementById('difficultySelector');
+
+// Переменные игры
+let gameActive = false;
+let gameTime = 60; // секунды
+let gameTimer = null;
+let minigameScore = 0;
+let asteroidsDestroyed = 0;
+let currentDifficulty = 'easy';
+let asteroidInterval = null;
+let asteroids = [];
+
+// Настройки сложности
+const DIFFICULTY_SETTINGS = {
+  easy: {
+    asteroidSpeed: 1,
+    spawnRate: 1000, // мс
+    asteroidSize: 35,
+    pointsPerAsteroid: 10,
+    energyPerAsteroid: 1
+  },
+  medium: {
+    asteroidSpeed: 1.5,
+    spawnRate: 800,
+    asteroidSize: 30,
+    pointsPerAsteroid: 15,
+    energyPerAsteroid: 2
+  },
+  hard: {
+    asteroidSpeed: 2,
+    spawnRate: 600,
+    asteroidSize: 25,
+    pointsPerAsteroid: 20,
+    energyPerAsteroid: 3
+  }
+};
+
+// События для мини-игры
+toggleMinigameBtn.onclick = () => {
+  minigameModal.classList.add('active');
+  resetGame();
+};
+
+closeMinigameBtn.onclick = () => {
+  minigameModal.classList.remove('active');
+  stopGame();
+};
+
+// Выбор сложности
+difficultySelector.addEventListener('click', (e) => {
+  if (!e.target.classList.contains('difficulty-btn')) return;
+  
+  // Убираем активный класс у всех кнопок
+  document.querySelectorAll('.difficulty-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Добавляем активный класс выбранной кнопке
+  e.target.classList.add('active');
+  currentDifficulty = e.target.dataset.difficulty;
+});
+
+// Начало игры
+startGameBtn.onclick = () => {
+  if (gameActive) return;
+  startGame();
+};
+
+// Функция запуска игры
+function startGame() {
+  gameActive = true;
+  minigameScore = 0;
+  asteroidsDestroyed = 0;
+  gameTime = 60;
+  
+  // Скрываем результаты предыдущей игры
+  gameResults.style.display = 'none';
+  
+  // Обновляем интерфейс
+  updateGameUI();
+  startGameBtn.textContent = 'Игра идет...';
+  startGameBtn.disabled = true;
+  
+  // Запускаем таймер
+  gameTimer = setInterval(() => {
+    gameTime--;
+    minigameTimerEl.textContent = gameTime;
+    
+    if (gameTime <= 0) {
+      endGame();
+    }
+  }, 1000);
+  
+  // Запускаем спавн астероидов
+  asteroidInterval = setInterval(spawnAsteroid, DIFFICULTY_SETTINGS[currentDifficulty].spawnRate);
+}
+
+// Функция остановки игры
+function stopGame() {
+  gameActive = false;
+  
+  // Останавливаем таймеры
+  if (gameTimer) clearInterval(gameTimer);
+  if (asteroidInterval) clearInterval(asteroidInterval);
+  
+  // Удаляем все астероиды
+  asteroids.forEach(asteroid => {
+    if (asteroid.element && asteroid.element.parentNode) {
+      asteroid.element.remove();
+    }
+  });
+  asteroids = [];
+  
+  // Сбрасываем кнопку
+  startGameBtn.textContent = 'Начать игру';
+  startGameBtn.disabled = false;
+}
+
+// Функция завершения игры
+function endGame() {
+  stopGame();
+  
+  // Начисляем награды
+  const settings = DIFFICULTY_SETTINGS[currentDifficulty];
+  const energyReward = asteroidsDestroyed * settings.energyPerAsteroid;
+  const scoreReward = minigameScore;
+  
+  // Добавляем энергию и очки
+  energy = Math.min(getMaxEnergy(), energy + energyReward);
+  score += scoreReward;
+  
+  // Обновляем основной интерфейс
+  updateUI();
+  saveProgress();
+  
+  // Показываем результаты
+  finalScoreEl.textContent = scoreReward.toLocaleString();
+  finalAsteroidsEl.textContent = asteroidsDestroyed;
+  finalEnergyEl.textContent = energyReward;
+  finalDifficultyEl.textContent = 
+    currentDifficulty === 'easy' ? 'Лёгкий' : 
+    currentDifficulty === 'medium' ? 'Средний' : 'Сложный';
+  
+  // Бонусное сообщение
+  let bonusMessage = '';
+  if (asteroidsDestroyed >= 50) {
+    bonusMessage = '🔥 Невероятно! Ты мастер защиты!';
+    // Дополнительный бонус
+    score += 500;
+    updateUI();
+    saveProgress();
+  } else if (asteroidsDestroyed >= 30) {
+    bonusMessage = '👍 Отличный результат!';
+  } else if (asteroidsDestroyed >= 15) {
+    bonusMessage = '😊 Хорошая игра!';
+  } else {
+    bonusMessage = '🎯 Попробуй еще раз!';
+  }
+  
+  bonusMessageEl.textContent = bonusMessage;
+  gameResults.style.display = 'block';
+}
+
+// Функция сброса игры
+function resetGame() {
+  stopGame();
+  minigameScore = 0;
+  asteroidsDestroyed = 0;
+  gameTime = 60;
+  updateGameUI();
+  gameResults.style.display = 'none';
+}
+
+// Функция обновления игрового интерфейса
+function updateGameUI() {
+  minigameScoreEl.textContent = minigameScore;
+  asteroidsDestroyedEl.textContent = asteroidsDestroyed;
+  minigameTimerEl.textContent = gameTime;
+}
+
+// Функция создания астероида
+function spawnAsteroid() {
+  if (!gameActive) return;
+  
+  const settings = DIFFICULTY_SETTINGS[currentDifficulty];
+  const asteroidSize = settings.asteroidSize;
+  
+  // Создаем элемент астероида
+  const asteroidEl = document.createElement('div');
+  asteroidEl.className = 'asteroid';
+  asteroidEl.style.width = `${asteroidSize}px`;
+  asteroidEl.style.height = `${asteroidSize}px`;
+  
+  // Случайная позиция за пределами поля
+  const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+  let startX, startY;
+  
+  switch(side) {
+    case 0: // top
+      startX = Math.random() * (minigameField.clientWidth - asteroidSize);
+      startY = -asteroidSize;
+      break;
+    case 1: // right
+      startX = minigameField.clientWidth;
+      startY = Math.random() * (minigameField.clientHeight - asteroidSize);
+      break;
+    case 2: // bottom
+      startX = Math.random() * (minigameField.clientWidth - asteroidSize);
+      startY = minigameField.clientHeight;
+      break;
+    case 3: // left
+      startX = -asteroidSize;
+      startY = Math.random() * (minigameField.clientHeight - asteroidSize);
+      break;
+  }
+  
+  asteroidEl.style.left = `${startX}px`;
+  asteroidEl.style.top = `${startY}px`;
+  
+  // Цель - центр глаза
+  const targetX = minigameField.clientWidth / 2;
+  const targetY = minigameField.clientHeight / 2;
+  
+  // Вычисляем направление
+  const dx = targetX - startX;
+  const dy = targetY - startY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  const speed = settings.asteroidSpeed;
+  
+  // Нормализуем вектор и умножаем на скорость
+  const vx = (dx / distance) * speed;
+  const vy = (dy / distance) * speed;
+  
+  // Добавляем немного случайности в траекторию
+  const randomFactor = 0.3;
+  const finalVx = vx + (Math.random() - 0.5) * randomFactor;
+  const finalVy = vy + (Math.random() - 0.5) * randomFactor;
+  
+  // Обработчик клика по астероиду
+  asteroidEl.onclick = () => {
+    if (!gameActive || asteroidEl.classList.contains('destroyed')) return;
+    
+    // Визуальный эффект уничтожения
+    asteroidEl.classList.add('destroyed');
+    
+    // Увеличиваем счет
+    minigameScore += settings.pointsPerAsteroid;
+    asteroidsDestroyed++;
+    
+    // Обновляем интерфейс
+    updateGameUI();
+    
+    // Удаляем элемент после анимации
+    setTimeout(() => {
+      if (asteroidEl.parentNode) {
+        asteroidEl.remove();
+        // Удаляем из массива
+        const index = asteroids.findIndex(a => a.element === asteroidEl);
+        if (index > -1) {
+          asteroids.splice(index, 1);
+        }
+      }
+    }, 500);
+  };
+  
+  // Добавляем на поле
+  minigameField.appendChild(asteroidEl);
+  
+  // Сохраняем данные астероида
+  const asteroid = {
+    element: asteroidEl,
+    x: startX,
+    y: startY,
+    vx: finalVx,
+    vy: finalVy,
+    size: asteroidSize
+  };
+  
+  asteroids.push(asteroid);
+}
+
+// Функция обновления позиций астероидов
+function updateAsteroids() {
+  if (!gameActive) return;
+  
+  for (let i = asteroids.length - 1; i >= 0; i--) {
+    const asteroid = asteroids[i];
+    
+    // Обновляем позицию
+    asteroid.x += asteroid.vx;
+    asteroid.y += asteroid.vy;
+    
+    // Проверяем столкновение с глазом
+    const eyeX = minigameField.clientWidth / 2;
+    const eyeY = minigameField.clientHeight / 2;
+    const eyeRadius = 40; // радиус глаза
+    
+    const distance = Math.sqrt(
+      Math.pow(asteroid.x - eyeX, 2) + 
+      Math.pow(asteroid.y - eyeY, 2)
+    );
+    
+    // Если астероид достиг глаза
+    if (distance < eyeRadius + asteroid.size / 2) {
+      // Мигание глаза
+      const eye = document.querySelector('.minigame-eye');
+      eye.style.boxShadow = '0 0 40px rgba(255, 0, 0, 0.9)';
+      setTimeout(() => {
+        eye.style.boxShadow = '0 0 40px rgba(33, 150, 243, 0.7)';
+      }, 200);
+      
+      // Удаляем астероид
+      asteroid.element.remove();
+      asteroids.splice(i, 1);
+      continue;
+    }
+    
+    // Проверяем выход за пределы поля
+    if (
+      asteroid.x < -asteroid.size * 2 || 
+      asteroid.x > minigameField.clientWidth + asteroid.size * 2 ||
+      asteroid.y < -asteroid.size * 2 || 
+      asteroid.y > minigameField.clientHeight + asteroid.size * 2
+    ) {
+      // Удаляем астероид
+      asteroid.element.remove();
+      asteroids.splice(i, 1);
+      continue;
+    }
+    
+    // Обновляем позицию на экране
+    asteroid.element.style.left = `${asteroid.x}px`;
+    asteroid.element.style.top = `${asteroid.y}px`;
+  }
+}
+
+// Игровой цикл
+function gameLoop() {
+  updateAsteroids();
+  requestAnimationFrame(gameLoop);
+}
+
+// Запускаем игровой цикл
+gameLoop();
+
+// =============================================
+// СУЩЕСТВУЮЩИЙ КОД ОСТАЕТСЯ БЕЗ ИЗМЕНЕНИЙ
+// =============================================
+
+// В конце существующего скрипта, после инициализации, добавляем:
+// (Этот код уже должен быть в вашем файле, просто убедитесь, что он есть)
+
+// Инициализация мини-игры при загрузке
+resetGame();
+
 // =============================================
 // КОСМИЧЕСКИЙ КОРАБЛЬ
 // =============================================

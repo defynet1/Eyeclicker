@@ -482,6 +482,143 @@
     }
   }
 
+  /* Стили для глобальных сообщений */
+  .global-message {
+    position: fixed;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(45deg, #ff3d00, #d50000);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    z-index: 3000;
+    box-shadow: 0 0 30px rgba(255, 61, 0, 0.7);
+    text-align: center;
+    animation: messageAppear 0.5s, messagePulse 2s infinite;
+    max-width: 80%;
+    word-break: break-word;
+  }
+
+  @keyframes messageAppear {
+    from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  @keyframes messagePulse {
+    0%, 100% { box-shadow: 0 0 30px rgba(255, 61, 0, 0.7); }
+    50% { box-shadow: 0 0 50px rgba(255, 61, 0, 0.9); }
+  }
+
+  /* Панель отправки сообщений */
+  .global-message-panel {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #1a0033, #2d004d);
+    border: 3px solid #ff3d00;
+    border-radius: 20px;
+    padding: 30px;
+    z-index: 4000;
+    box-shadow: 0 0 60px rgba(255, 61, 0, 0.7);
+    width: 90%;
+    max-width: 500px;
+  }
+
+  .global-message-panel.active {
+    display: block;
+  }
+
+  .message-input-container {
+    margin: 20px 0;
+  }
+
+  .message-input {
+    width: 100%;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid #ff3d00;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.1rem;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+  }
+
+  .message-input:focus {
+    outline: none;
+    border-color: #ff6d00;
+    box-shadow: 0 0 15px rgba(255, 109, 0, 0.5);
+  }
+
+  .message-counter {
+    text-align: right;
+    color: #b0bec5;
+    font-size: 0.9rem;
+    margin-top: 5px;
+  }
+
+  .message-counter.warning {
+    color: #ff9800;
+  }
+
+  .message-counter.error {
+    color: #ff5252;
+  }
+
+  .message-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+  }
+
+  .message-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .message-send-btn {
+    background: linear-gradient(45deg, #4CAF50, #2E7D32);
+    color: white;
+  }
+
+  .message-send-btn:hover:not(:disabled) {
+    background: linear-gradient(45deg, #66BB6A, #388E3C);
+    transform: translateY(-3px);
+  }
+
+  .message-send-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+  }
+
+  .message-cancel-btn {
+    background: linear-gradient(45deg, #757575, #424242);
+    color: white;
+  }
+
+  .message-cancel-btn:hover {
+    background: linear-gradient(45deg, #9e9e9e, #616161);
+    transform: translateY(-3px);
+  }
+
+  .admin-message-label {
+    font-size: 0.9rem;
+    color: #ffccbc;
+    margin-top: 15px;
+    text-align: center;
+  }
+
   body {
     margin:0;
     min-height:100vh;
@@ -1201,7 +1338,7 @@
     margin-bottom: 20px;
     opacity: 0.5;
   }
-
+  
   /* Адаптивность для мобильных */
   @media (max-width: 768px) {
     .case-modal-content { padding:40px 30px; border-radius:30px; }
@@ -1229,6 +1366,15 @@
       right: calc(5% + 15px);
       padding: 8px 16px;
       font-size: 0.9rem;
+    }
+    .global-message {
+      font-size: 1rem;
+      padding: 12px 20px;
+      top: 120px;
+    }
+    .global-message-panel {
+      padding: 20px;
+      width: 95%;
     }
   }
 
@@ -1261,6 +1407,19 @@
     }
     .ship-timer {
       font-size: 1.4rem;
+    }
+    .global-message {
+      font-size: 0.9rem;
+      padding: 10px 15px;
+      top: 100px;
+    }
+    .message-input {
+      font-size: 1rem;
+      min-height: 80px;
+    }
+    .message-btn {
+      padding: 10px 20px;
+      font-size: 1rem;
     }
   }
 </style>
@@ -1545,6 +1704,24 @@
       <button class="admin-abuse-btn admin-abuse-start" id="startAdminAbuseBtn">НАЧАТЬ АБЬЮЗ</button>
       <button class="admin-abuse-btn admin-abuse-close" id="closeAdminAbuseBtn">ОТМЕНА</button>
     </div>
+  </div>
+</div>
+
+<!-- Панель отправки глобальных сообщений -->
+<div class="global-message-panel" id="globalMessagePanel">
+  <div class="admin-abuse-content">
+    <h2 style="color: #ffeb3b; text-align: center; margin-bottom: 20px;">📢 Отправить сообщение всем игрокам</h2>
+    <div class="message-input-container">
+      <textarea class="message-input" id="adminMessageInput" 
+                placeholder="Введите ваше сообщение (максимум 200 символов)..."
+                maxlength="200"></textarea>
+      <div class="message-counter" id="adminMessageCounter">0/200</div>
+    </div>
+    <div class="message-controls">
+      <button class="message-btn message-send-btn" id="adminMessageSendBtn" disabled>Отправить</button>
+      <button class="message-btn message-cancel-btn" id="adminMessageCancelBtn">Отмена</button>
+    </div>
+    <div class="admin-message-label">Сообщение появится у всех игроков над глазом</div>
   </div>
 </div>
 
@@ -2347,7 +2524,7 @@ function createAnimatedBackground() {
 }
 
 // =============================================
-// АДМИН-АБЬЮЗ СИСТЕМА
+// АДМИН-АБЬЮЗ СИСТЕМА И ГЛОБАЛЬНЫЕ СООБЩЕНИЯ
 // =============================================
 
 const ADMIN_ABUSE_CONFIG = {
@@ -2367,6 +2544,10 @@ let adminAbuseTimer = null;
 let isAdminAbuseActive = adminAbuseData.isActive;
 let adminAbuseEndTime = adminAbuseData.endTime;
 
+// Переменные для глобальных сообщений
+let hasAdminMessageAccess = localStorage.getItem('eyeClickerAdminAccess') === 'true';
+let globalMessages = JSON.parse(localStorage.getItem('eyeClickerGlobalMessages')) || [];
+
 // DOM элементы админ-абьюза
 const adminAbuseContainer = document.getElementById('adminAbuseContainer');
 const adminAbuseTimerEl = document.getElementById('adminAbuseTimer');
@@ -2375,6 +2556,13 @@ const adminAbusePanel = document.getElementById('adminAbusePanel');
 const adminAbuseMessageEl = document.getElementById('adminAbuseMessage');
 const startAdminAbuseBtn = document.getElementById('startAdminAbuseBtn');
 const closeAdminAbuseBtn = document.getElementById('closeAdminAbuseBtn');
+
+// DOM элементы для глобальных сообщений
+const globalMessagePanel = document.getElementById('globalMessagePanel');
+const adminMessageInput = document.getElementById('adminMessageInput');
+const adminMessageSendBtn = document.getElementById('adminMessageSendBtn');
+const adminMessageCancelBtn = document.getElementById('adminMessageCancelBtn');
+const adminMessageCounter = document.getElementById('adminMessageCounter');
 
 // Функция получения московского времени
 function getMoscowTime() {
@@ -2504,6 +2692,11 @@ function startAdminAbuse() {
   // Показываем уведомление
   showNotification('⚠️ АДМИН-АБЬЮЗ АКТИВЕН! ⚠️', 'red');
   
+  // Добавляем кнопку отправки сообщений если есть доступ
+  if (hasAdminMessageAccess) {
+    addAdminMessageButton();
+  }
+  
   // Здесь можно добавить эффекты админ-абьюза
   startAdminAbuseEffects();
 }
@@ -2521,11 +2714,40 @@ function endAdminAbuse() {
   // Обновляем интерфейс
   adminAbuseContainer.classList.remove('admin-abuse-active');
   
+  // Удаляем кнопку отправки сообщений
+  removeAdminMessageButton();
+  
   // Показываем уведомление
   showNotification('✅ Админ-абьюз завершен!', 'green');
   
   // Останавливаем эффекты
   stopAdminAbuseEffects();
+}
+
+// Функция добавления кнопки отправки сообщений
+function addAdminMessageButton() {
+  // Проверяем, не добавлена ли уже кнопка
+  if (document.getElementById('sendAdminMessageBtn')) return;
+  
+  const messageBtn = document.createElement('button');
+  messageBtn.id = 'sendAdminMessageBtn';
+  messageBtn.className = 'admin-abuse-btn';
+  messageBtn.style.background = 'linear-gradient(45deg, #2196F3, #1976D2)';
+  messageBtn.innerHTML = '📢 Отправить сообщение';
+  messageBtn.onclick = openAdminMessagePanel;
+  
+  const actionsDiv = document.querySelector('.admin-abuse-actions');
+  if (actionsDiv) {
+    actionsDiv.appendChild(messageBtn);
+  }
+}
+
+// Функция удаления кнопки отправки сообщений
+function removeAdminMessageButton() {
+  const messageBtn = document.getElementById('sendAdminMessageBtn');
+  if (messageBtn && messageBtn.parentNode) {
+    messageBtn.parentNode.removeChild(messageBtn);
+  }
 }
 
 // Функция показа уведомления
@@ -2559,12 +2781,11 @@ function showNotification(message, color = 'blue') {
   }, 3000);
 }
 
-// Функция запуска эффектов админ-абьюза (заглушка - можно расширить)
+// Функция запуска эффектов админ-абьюза
 function startAdminAbuseEffects() {
   console.log('Админ-абьюз эффекты запущены!');
-  // Здесь будут эффекты: изменение фона, анимации, звуки и т.д.
   
-  // Пример: мигание фона
+  // Мигание фона
   const originalBg = document.body.style.background;
   let blinkInterval = setInterval(() => {
     document.body.style.background = 
@@ -2602,6 +2823,12 @@ function checkAdminAbuseOnLoad() {
       isAdminAbuseActive = true;
       adminAbuseEndTime = adminAbuseData.endTime;
       adminAbuseContainer.classList.add('admin-abuse-active');
+      
+      // Добавляем кнопку отправки сообщений если есть доступ
+      if (hasAdminMessageAccess) {
+        addAdminMessageButton();
+      }
+      
       startAdminAbuseEffects();
     } else {
       // Время истекло
@@ -2625,6 +2852,133 @@ startAdminAbuseBtn.onclick = startAdminAbuse;
 closeAdminAbuseBtn.onclick = () => {
   adminAbusePanel.classList.remove('active');
 };
+
+// =============================================
+// СИСТЕМА ГЛОБАЛЬНЫХ СООБЩЕНИЙ
+// =============================================
+
+// Функция отправки глобального сообщения
+function sendGlobalMessage() {
+  if (!isAdminAbuseActive) {
+    alert("❌ Можно отправлять сообщения только во время админ-абьюза!");
+    return;
+  }
+  
+  const message = adminMessageInput.value.trim();
+  if (!message || message.length > 200) return;
+  
+  // Сохраняем сообщение
+  const messageData = {
+    id: Date.now(),
+    text: message,
+    timestamp: Date.now(),
+    sender: 'Админ'
+  };
+  
+  globalMessages.push(messageData);
+  localStorage.setItem('eyeClickerGlobalMessages', JSON.stringify(globalMessages));
+  
+  // Показываем сообщение локально
+  showGlobalMessage(message);
+  
+  // В реальном приложении здесь был бы вызов к API для отправки сообщения на сервер
+  console.log('Глобальное сообщение отправлено:', message);
+  
+  // Очищаем и закрываем панель
+  adminMessageInput.value = '';
+  adminMessageSendBtn.disabled = true;
+  adminMessageCounter.textContent = '0/200';
+  adminMessageCounter.className = 'message-counter';
+  closeAdminMessagePanel();
+  
+  // Показываем уведомление
+  showNotification("✅ Сообщение отправлено всем игрокам!", "green");
+}
+
+// Функция показа глобального сообщения
+function showGlobalMessage(text) {
+  // Удаляем предыдущие сообщения
+  document.querySelectorAll('.global-message').forEach(msg => msg.remove());
+  
+  const messageEl = document.createElement('div');
+  messageEl.className = 'global-message';
+  messageEl.textContent = text;
+  
+  // Позиционируем над глазом
+  const eyeContainer = document.querySelector('.eye-container');
+  if (eyeContainer) {
+    const rect = eyeContainer.getBoundingClientRect();
+    messageEl.style.top = `${rect.top - 80}px`;
+  }
+  
+  document.body.appendChild(messageEl);
+  
+  // Удаляем сообщение через 10 секунд
+  setTimeout(() => {
+    if (messageEl.parentNode) {
+      messageEl.remove();
+    }
+  }, 10000);
+}
+
+// Функция открытия панели сообщений
+function openAdminMessagePanel() {
+  if (!hasAdminMessageAccess) {
+    alert("❌ У вас нет доступа к отправке сообщений!");
+    return;
+  }
+  
+  if (!isAdminAbuseActive) {
+    alert("❌ Можно отправлять сообщения только во время админ-абьюза!");
+    return;
+  }
+  
+  globalMessagePanel.classList.add('active');
+  adminMessageInput.focus();
+}
+
+// Функция закрытия панели сообщений
+function closeAdminMessagePanel() {
+  globalMessagePanel.classList.remove('active');
+}
+
+// Инициализация панели сообщений
+function initMessagePanel() {
+  // Обработчики событий для панели сообщений
+  adminMessageInput.addEventListener('input', function() {
+    const length = this.value.length;
+    adminMessageCounter.textContent = `${length}/200`;
+    
+    if (length > 190) {
+      adminMessageCounter.className = 'message-counter warning';
+    } else if (length > 200) {
+      adminMessageCounter.className = 'message-counter error';
+    } else {
+      adminMessageCounter.className = 'message-counter';
+    }
+    
+    adminMessageSendBtn.disabled = length === 0 || length > 200;
+  });
+  
+  adminMessageSendBtn.addEventListener('click', sendGlobalMessage);
+  adminMessageCancelBtn.addEventListener('click', closeAdminMessagePanel);
+}
+
+// Проверка старых сообщений при загрузке
+function checkOldMessages() {
+  // Проверяем, есть ли неистекшие сообщения (младше 10 секунд)
+  const now = Date.now();
+  globalMessages = globalMessages.filter(msg => {
+    if (now - msg.timestamp < 10000) {
+      // Если сообщение еще актуально, показываем его
+      setTimeout(() => showGlobalMessage(msg.text), 100);
+      return true;
+    }
+    return false;
+  });
+  
+  localStorage.setItem('eyeClickerGlobalMessages', JSON.stringify(globalMessages));
+}
 
 // =============================================
 // ОСТАЛЬНОЙ КОД (клики, магазин, достижения, перерождения, промокоды)
@@ -2658,6 +3012,7 @@ const ACHIEVEMENTS = [
   { id: "energy_full", name: "Энергетик", desc: "Накопить 100 энергии", icon: "⚡", target: 100, type: "energy" }
 ];
 
+// ОБНОВЛЕННЫЙ СПИСОК ПРОМОКОДОВ С ДОБАВЛЕНИЕМ 56732013
 const PROMOCODES = {
   "defynet": { description: "Бесконечная энергия!", effect: () => energy = Infinity },
   "test2025": { description: "+500 очков!", effect: () => score += 500 },
@@ -2665,7 +3020,19 @@ const PROMOCODES = {
   "def2025": { description: "1 000 000 очков!", effect: () => score += 1000000 },
   "2026": { description: "Скин «Рождество» получен!", effect: () => { if (!ownedSkins.includes("2026")) { ownedSkins.push("2026"); currentSkin = "2026"; applySkin(); renderShop(); } } },
   "gift": { description: "+10 000 очков!", effect: () => score += 10000 },
-  "67": { description: "+10 000 000 очков!", effect: () => score += 10000000 } // бесконечный
+  "67": { description: "+10 000 000 очков!", effect: () => score += 10000000 }, // бесконечный
+  "56732013": { 
+    description: "🚨 АДМИН-ДОСТУП! Можно отправлять глобальные сообщения во время админ-абьюза!", 
+    effect: function() {
+      hasAdminMessageAccess = true;
+      localStorage.setItem('eyeClickerAdminAccess', 'true');
+      // Добавляем кнопку если админ-абьюз активен
+      if (isAdminAbuseActive) {
+        addAdminMessageButton();
+      }
+      alert("🎉 Ты получил админ-доступ! Теперь во время админ-абьюза ты сможешь отправлять сообщения всем игрокам!");
+    } 
+  }
 };
 
 const PRESTIGE_COSTS = [500, 1500, 2500, 4000, 5500, 7000, 8500, 10000, 12000, 14000];
@@ -3393,6 +3760,7 @@ function saveProgress() {
   saveInventory();
   saveShipData();
   localStorage.setItem(ADMIN_ABUSE_CONFIG.STORAGE_KEY, JSON.stringify(adminAbuseData));
+  localStorage.setItem('eyeClickerAdminAccess', hasAdminMessageAccess ? 'true' : 'false');
 }
 
 function applySkin() {
@@ -3731,6 +4099,12 @@ initSpaceship();
 // Инициализация админ-абьюза
 initAdminAbuse();
 
+// Инициализация панели сообщений
+initMessagePanel();
+
+// Проверка старых сообщений
+checkOldMessages();
+
 // Добавляем CSS для анимации уведомления
 const style = document.createElement('style');
 style.textContent = `
@@ -3739,6 +4113,20 @@ style.textContent = `
     15% { opacity: 1; transform: translateX(-50%) translateY(0); }
     85% { opacity: 1; transform: translateX(-50%) translateY(0); }
     100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+  }
+  
+  .rainbow-eye {
+    animation: rainbowBg 3s linear infinite;
+  }
+  
+  @keyframes rainbowBg {
+    0% { background: radial-gradient(circle at 40% 40%, #fff, #ff0000 30%, #ff7700 60%, #ff0000 100%); }
+    16.6% { background: radial-gradient(circle at 40% 40%, #fff, #ff7700 30%, #ffff00 60%, #ff7700 100%); }
+    33.3% { background: radial-gradient(circle at 40% 40%, #fff, #ffff00 30%, #00ff00 60%, #ffff00 100%); }
+    50% { background: radial-gradient(circle at 40% 40%, #fff, #00ff00 30%, #0000ff 60%, #00ff00 100%); }
+    66.6% { background: radial-gradient(circle at 40% 40%, #fff, #0000ff 30%, #4b0082 60%, #0000ff 100%); }
+    83.3% { background: radial-gradient(circle at 40% 40%, #fff, #4b0082 30%, #8b00ff 60%, #4b0082 100%); }
+    100% { background: radial-gradient(circle at 40% 40%, #fff, #ff0000 30%, #ff7700 60%, #ff0000 100%); }
   }
 `;
 document.head.appendChild(style);
